@@ -1,0 +1,23 @@
+__pycache__/
+*.py[cod]
+*.sqlite3
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+
+# SQLite DB (optional)
+db.sqlite3
+
+# Django static/media (if applicable)
+staticfiles/
+media/
+# Ignore virtual environments
+venv/
+
