@@ -1,4 +1,38 @@
 {% extends 'shop/basic.html' %}
 
-{% block title%} About Us{% endblock %}
-{% block body %} This is our about page {% endblock %}
+{% block title %} About Us {% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <h1 class="text-center mb-4">About My Awesome Cart</h1>
+    <p class="lead">
+        Welcome to <strong>My Awesome Cart</strong>, your one-stop online shop for all your favorite products!
+        We’re dedicated to giving you the very best shopping experience, with a focus on reliability, customer service, and uniqueness.
+    </p>
+
+    <h3 class="mt-4">Our Journey</h3>
+    <p>
+        Started in 2024 by a group of passionate developers and entrepreneurs, My Awesome Cart has come a long way from its beginnings
+        as a small student project. When we first started out, our passion for building user-friendly online stores drove us to build this platform.
+    </p>
+
+    <h3 class="mt-4">What We Offer</h3>
+    <ul>
+        <li>Wide variety of quality products</li>
+        <li>Affordable pricing</li>
+        <li>Fast and secure checkout</li>
+        <li>Reliable customer support</li>
+    </ul>
+
+    <h3 class="mt-4">Meet the Team</h3>
+    <p>
+        We're a small but dedicated team of tech enthusiasts and designers working hard to make your online shopping seamless and enjoyable.
+        Our mission is to constantly improve and bring you the best experience possible.
+    </p>
+
+    <div class="text-center mt-5">
+        <a href="/shop/contact" class="btn btn-primary">Contact Us</a>
+    </div>
+</div>
+{% endblock %}
+

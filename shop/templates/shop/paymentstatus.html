@@ -1,22 +1,25 @@
+
 {% extends 'shop/basic.html' %}
-{% block title%} My Awesome Cart Tracker{% endblock %}
+{% block title %}Payment Status - My Awesome Cart{% endblock %}
+
 {% block body %}
-<div class="container">
-    {{response}}
-    <div class="col my-4">
-
-        <h2>Payment status regarding your order Id {{response.ORDERID}}</h2>
-        {% if response.RESPCODE == '01' %}
-        ORDER SUCCESS
-        {% else %}
-        ORDER FAILURE
-        {% endif%}
-
-    </div>
-
+<div class="container my-5 text-center">
+    {% if status == 'success' %}
+        <h2 class="text-success">✅ Payment Successful</h2>
+        <p>Thank you! Your order was placed successfully.</p>
+        <p><strong>Razorpay Payment ID:</strong> {{ razorpay_payment_id }}</p>
+         <p><strong>Razorpay ID :</strong> {{ razorpay_order_id }}</p>  {# ✅ Add this #}
+         <p><strong>Order ID (for tracking):</strong>  {{ order_id }}</p>  {# ✅ Add this #}
+         
+    {% elif status == 'failure' %}
+        <h2 class="text-danger">❌ Payment Failed</h2>
+        <p>Sorry, your payment could not be verified.</p>
+    {% elif status == 'error' %}
+        <h2 class="text-warning">⚠️ Payment Error</h2>
+        <p>{{ message }}</p>
+    {% else %}
+        <h2>Unknown Payment Status</h2>
+    {% endif %}
+    <a href="/" class="btn btn-primary mt-4">Back to Home</a>
 </div>
-{% endblock %}
-{% block js %}
-<script>
-</script>
 {% endblock %}

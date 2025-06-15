@@ -21,3 +21,27 @@ media/
 # Ignore virtual environments
 venv/
 
+# Python
+*.pyc
+__pycache__/
+
+# Django
+*.log
+*.pot
+*.py[cod]
+db.sqlite3
+media/
+staticfiles/
+
+# Env
+.env
+venv/
+ENV/
+env/
+
+# VSCode / IDEs
+.vscode/
+.idea/
+
+# macOS
+.DS_Store

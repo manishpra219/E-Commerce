@@ -1,0 +1,32 @@
+{% extends 'shop/basic.html' %}
+{% block title %}Razorpay Checkout{% endblock %}
+{% block body %}
+
+<div class="container my-4">
+  <h3>Complete Your Payment</h3>
+  <p>Order ID: {{ order.order_id }}</p>
+  <p>Amount to Pay: ₹{{ order.amount }}</p>
+
+  <form action="/shop/handlerequest/" method="POST">
+    {% csrf_token %}
+    <script
+      src="https://checkout.razorpay.com/v1/checkout.js"
+      data-key="{{ razorpay_key_id }}"
+      data-amount="{{ payment.amount }}"
+      data-currency="INR"
+      data-order_id="{{ payment.id }}"
+      data-buttontext="Pay Now"
+      data-name="MyAwesomeCart"
+      data-description="Thank you for shopping with us!"
+      data-image="https://yourdomain.com/static/logo.png"
+      data-prefill.name="{{ order.name }}"
+      data-prefill.email="{{ order.email }}"
+      data-theme.color="#F37254">
+    </script>
+    <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+    <input type="hidden" name="razorpay_order_id" id="razorpay_order_id">
+    <input type="hidden" name="razorpay_signature" id="razorpay_signature">
+  </form>
+</div>
+
+{% endblock %}

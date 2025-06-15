@@ -1,5 +1,5 @@
 {% extends 'shop/basic.html' %}
-{% block title%} My Awesome Cart Tracker{% endblock %}
+{% block title %}My Awesome Cart Tracker{% endblock %}
 {% block body %}
 <div class="container">
     <div class="col my-4">
@@ -14,9 +14,17 @@
                     <label for="inputEmail4">Email</label>
                     <input type="email" class="form-control" id="email" name="email" placeholder="Email">
                 </div>
-                <button type="submit" class="btn btn-primary">Track Order</button>
             </div>
+            <button type="submit" class="btn btn-primary mt-2">Track Order</button>
+        </form>
     </div>
+
+    <div id="loading" class="text-center my-3" style="display:none;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
     <div class="col my-4">
         <h2>Your Order Status</h2>
         <div class="my-4">
@@ -24,6 +32,7 @@
                 Enter your order Id and Email and click Track Order to find details about your order!
             </ul>
         </div>
+
         <h2>Your Order Details</h2>
         <div class="my-4">
             <ul class="list-group" id="citems">
@@ -32,55 +41,74 @@
     </div>
 </div>
 {% endblock %}
+
 {% block js %}
 <script>
 $('#trackerForm').submit(function(event) {
     $('#items').empty();
+    $('#citems').empty();
+    $('#loading').show();
+
     var formData = {
         'orderId': $('input[name=orderId]').val(),
         'email': $('input[name=email]').val(),
         'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
     };
+
     $.ajax({
-            type: 'POST',
-            url: '/shop/tracker/',
-            data: formData,
-            encode: true
-        })
-        .done(function(data) {
-            $('#citems').empty();
-            console.log(data)
+        type: 'POST',
+        url: '/shop/tracker/',
+        data: formData,
+        encode: true
+    })
+    .done(function(data) {
+        $('#loading').hide();
+        try {
             data = JSON.parse(data);
-            if (data['status'] == 'success') {
-                updates = data['updates'];
-                for (i = 0; i < updates.length; i++) {
-                    let text = updates[i]['text'];
-                    let time = updates[i]['time'];
-                    mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
+        } catch (e) {
+            $('#items').append(`<li class="list-group-item list-group-item-danger">Invalid response from server.</li>`);
+            return;
+        }
+
+        if (data['status'] == 'success') {
+            let updates = data['updates'];
+            for (let i = 0; i < updates.length; i++) {
+                let text = updates[i]['text'];
+                let time = updates[i]['time'];
+                let mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
                     ${text}
                     <span class="badge badge-primary badge-pill">${time}</span>
-                </li>`
-                    $('#items').append(mystr);
-                }
-                // Fill in the order details
-                cart = JSON.parse(data['itemsJson']);
-                console.log(cart);
-                for (item in cart) {
+                </li>`;
+                $('#items').append(mystr);
+            }
+
+            try {
+                let cart = JSON.parse(data['itemsJson']);
+                for (let item in cart) {
                     let name = cart[item][1];
                     let qty = cart[item][0];
-                    mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
-                    ${name}
-                    <span class="badge badge-primary badge-pill">${qty}</span>
-                </li>`
+                    let mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
+                        ${name}
+                        <span class="badge badge-primary badge-pill">${qty}</span>
+                    </li>`;
                     $('#citems').append(mystr);
                 }
-            } else {
-                mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
-                    Sorry, We are not able to fetch this order id and email. Make sure to type correct order Id and email</li>`
-                $('#items').append(mystr);
-                $('#citems').append(mystr);
+            } catch (err) {
+                $('#citems').append(`<li class="list-group-item text-danger">Unable to load cart items.</li>`);
             }
-        });
+        } else {
+            let mystr = `<li class="list-group-item list-group-item-danger">
+                <b>Error:</b> No order found. Please check your Order ID and Email.
+            </li>`;
+            $('#items').append(mystr);
+            $('#citems').append(mystr);
+        }
+    })
+    .fail(function() {
+        $('#loading').hide();
+        $('#items').append(`<li class="list-group-item list-group-item-danger">Server error. Please try again later.</li>`);
+    });
+
     event.preventDefault();
 });
 </script>
